@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: product-api
+  codec:
+    max-in-memory-size: 50MB
+    sql.init.mode: always
+  flyway:
+    url: jdbc:postgresql://localhost:54320/product
+    locations: classpath:db/postgres/migration
+    user: user
+    password: password
+    enabled: true
+  datasource:
+    initialization-mode: always
+    url: jdbc:postgresql://localhost:54320/product
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
