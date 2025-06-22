@@ -45,4 +45,16 @@ public class ProductService implements IProductService{
         }
         productRepository.deleteById(id);
     }
+
+    @Override
+    public ProductApiDto saveProduct(ProductApiDto productApiDto) {
+        Optional<ProductEntity> product = productRepository.findBySku(productApiDto.getSku());
+        if (product.isPresent()) {
+            throw new ProductException(ErrorCode.PRODUCT_ALREADY_EXISTS, "product already exists");
+        }
+        ProductEntity productToSave = ProductMapper.toNewEntity(productApiDto);
+        ProductEntity savedProduct = productRepository.save(productToSave);
+        return ProductMapper.toDto(savedProduct);
+    }
+
 }

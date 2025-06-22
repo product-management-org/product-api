@@ -3,6 +3,7 @@ package com.product;
 import com.product.dto.ProductApiDto;
 import com.product.entity.ProductEntity;
 import com.product.exception.ProductException;
+import com.product.mapper.ProductMapper;
 import com.product.repository.IProductRepository;
 import com.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,8 @@ public class ProductServiceTest {
         product1.setPrice(BigDecimal.valueOf(25.11));
         product1.setSku("WM-1002");
         product1.setCategory("Electronics");
+        product1.setCreatedAt(Instant.now());
+        product1.setUpdatedAt(Instant.now());
 
         product2 = new ProductEntity();
         product2.setId(2L);
@@ -49,6 +53,8 @@ public class ProductServiceTest {
         product2.setPrice(BigDecimal.valueOf(500));
         product2.setSku("WM-1004");
         product2.setCategory("Electronics");
+        product1.setCreatedAt(Instant.now());
+        product1.setUpdatedAt(Instant.now());
     }
 
     @Test
@@ -93,6 +99,26 @@ public class ProductServiceTest {
         assertThatThrownBy(() -> productService.deleteProductById(90L))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("product does not exist");
+    }
+
+    @Test
+    void test_saveProduct_when_sku_does_not_exist() {
+        ProductApiDto dto = ProductMapper.toDto(product1);
+        when(productRepository.findBySku(anyString())).thenReturn(Optional.empty());
+        when(productRepository.save(any(ProductEntity.class))).thenReturn(product1);
+        ProductApiDto result = productService.saveProduct(dto);
+        assertThat(result).isNotNull();
+        assertThat(result.getSku()).isEqualTo("WM-1002");
+        assertThat(result.getName()).isEqualTo("Wireless Mouse");
+    }
+
+    @Test
+    void test_saveProduct_when_sku_already_exists() {
+        when(productRepository.findBySku("WM-1002")).thenReturn(Optional.of(product1));
+        ProductApiDto dto = ProductMapper.toDto(product1);
+        assertThatThrownBy(() -> productService.saveProduct(dto))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("product already exists");
     }
 
 }

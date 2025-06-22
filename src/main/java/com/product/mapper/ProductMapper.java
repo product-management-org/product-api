@@ -3,18 +3,20 @@ package com.product.mapper;
 import com.product.dto.ProductApiDto;
 import com.product.entity.ProductEntity;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+
 public class ProductMapper {
 
-    public static ProductEntity toEntity(ProductApiDto dto){
+    public static ProductEntity toNewEntity(ProductApiDto dto){
         ProductEntity product = new ProductEntity();
-        product.setId(dto.getId());
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         product.setSku(dto.getSku());
         product.setCategory(dto.getCategory());
-        product.setCreatedAt(dto.getCreatedAt());
-        product.setUpdatedAt(dto.getUpdatedAt());
+        product.setCreatedAt(Instant.now());
+        product.setUpdatedAt(Instant.now());
         return product;
     }
 
@@ -26,8 +28,8 @@ public class ProductMapper {
         dto.setPrice(entity.getPrice());
         dto.setSku(entity.getSku());
         dto.setCategory(entity.getCategory());
-        dto.setCreatedAt(entity.getCreatedAt());
-        dto.setUpdatedAt(entity.getUpdatedAt());
+        dto.setCreatedAt(entity.getCreatedAt().atOffset(ZoneOffset.UTC));
+        dto.setUpdatedAt(entity.getUpdatedAt().atOffset(ZoneOffset.UTC));
         return dto;
     }
 }

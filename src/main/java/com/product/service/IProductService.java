@@ -9,4 +9,5 @@ public interface IProductService {
     List<ProductApiDto> getAllProducts();
     ProductApiDto getProductById(Long id);
     void deleteProductById(Long id);
+    ProductApiDto saveProduct(ProductApiDto productApiDto);
 }
