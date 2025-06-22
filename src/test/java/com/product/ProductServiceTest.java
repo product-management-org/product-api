@@ -2,6 +2,7 @@ package com.product;
 
 import com.product.dto.ProductApiDto;
 import com.product.entity.ProductEntity;
+import com.product.exception.ProductException;
 import com.product.repository.IProductRepository;
 import com.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -32,7 +34,6 @@ public class ProductServiceTest {
 
     @BeforeEach
     public void setup(){
-
         product1 = new ProductEntity();
         product1.setId(1L);
         product1.setName("Wireless Mouse");
@@ -52,13 +53,28 @@ public class ProductServiceTest {
 
     @Test
     void get_all_products(){
-
         List<ProductEntity> listProducts = Arrays.asList(product1, product2);
         when(productRepository.findAll()).thenReturn(listProducts);
         List<ProductApiDto> result = productService.getAllProducts();
         assertThat(result.getFirst().getId()).isEqualTo(1L);
         assertThat(result.getFirst().getName()).isEqualTo("Wireless Mouse");
         assertThat(result).hasSize(2);
+    }
 
+    @Test
+    void test_getProductById_when_id_is_valid(){
+        Optional<ProductEntity> product = Optional.of(product2);
+        when(productRepository.findById(2L)).thenReturn(product);
+        ProductApiDto result = productService.getProductById(2L);
+        assertThat(result.getId()).isEqualTo(2L);
+        assertThat(result.getName()).isEqualTo("Computer");
+    }
+
+    @Test
+    void test_getProductById_when_id_does_not_exist(){
+        when(productRepository.findById(88L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> productService.getProductById(88L))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("product does not exist");
     }
 }
