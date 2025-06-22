@@ -114,11 +114,34 @@ public class ProductServiceTest {
 
     @Test
     void test_saveProduct_when_sku_already_exists() {
-        when(productRepository.findBySku("WM-1002")).thenReturn(Optional.of(product1));
+        when(productRepository.findBySku(anyString())).thenReturn(Optional.of(product1));
         ProductApiDto dto = ProductMapper.toDto(product1);
         assertThatThrownBy(() -> productService.saveProduct(dto))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("product already exists");
+    }
+
+    @Test
+    void test_updateProduct_when_id_is_valid(){
+        Optional<ProductEntity> product = Optional.of(product1);
+        when(productRepository.findById(1L)).thenReturn(product);
+        when(productRepository.saveAndFlush(any(ProductEntity.class))).thenReturn(product1);
+        ProductApiDto dto = ProductMapper.toDto(product1);
+        dto.setName("Wireless Keyboard");
+        dto.setSku("WM-1005");
+        ProductApiDto result = productService.updateProduct(1L, dto);
+        assertThat(result.getName()).isEqualTo("Wireless Keyboard");
+        assertThat(result.getSku()).isEqualTo("WM-1005");
+    }
+
+    @Test
+    void test_updateProduct_when_id_is_not_valid(){
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+        ProductApiDto dto = ProductMapper.toDto(product1);
+        assertThatThrownBy(() -> productService.updateProduct(1L, dto))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("product does not exist");
+
     }
 
 }

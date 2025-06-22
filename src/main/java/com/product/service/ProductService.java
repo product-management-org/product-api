@@ -57,4 +57,21 @@ public class ProductService implements IProductService{
         return ProductMapper.toDto(savedProduct);
     }
 
+    @Override
+    public ProductApiDto updateProduct(Long id, ProductApiDto productApiDto) {
+        Optional<ProductEntity> product = productRepository.findById(id);
+        if (product.isEmpty()) {
+            throw new ProductException(ErrorCode.PRODUCT_NOT_FOUND, "product does not exist");
+        }
+        ProductEntity productEntity = product.get();
+        productEntity.setName(productApiDto.getName());
+        productEntity.setDescription(productApiDto.getDescription());
+        productEntity.setPrice(productApiDto.getPrice());
+        productEntity.setSku(productApiDto.getSku());
+        productEntity.setCategory(productApiDto.getCategory());
+        productEntity.setCategory(productApiDto.getCategory());
+        ProductEntity updatedProduct = productRepository.saveAndFlush(productEntity);
+        return ProductMapper.toDto(updatedProduct);
+    }
+
 }
