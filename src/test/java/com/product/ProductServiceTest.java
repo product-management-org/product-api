@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -52,7 +52,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void get_all_products(){
+    void test_getAllProducts(){
         List<ProductEntity> listProducts = Arrays.asList(product1, product2);
         when(productRepository.findAll()).thenReturn(listProducts);
         List<ProductApiDto> result = productService.getAllProducts();
@@ -77,4 +77,22 @@ public class ProductServiceTest {
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("product does not exist");
     }
+
+    @Test
+    void test_deleteProductById_when_id_is_valid(){
+        Optional<ProductEntity> product = Optional.of(product1);
+        when(productRepository.findById(1L)).thenReturn(product);
+        doNothing().when(productRepository).deleteById(1L);
+        productService.deleteProductById(1L);
+        verify(productRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void test_deleteProductById_when_id_is_not_valid(){
+        when(productRepository.findById(90L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> productService.deleteProductById(90L))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("product does not exist");
+    }
+
 }

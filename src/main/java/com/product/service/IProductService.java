@@ -7,5 +7,6 @@ import java.util.List;
 public interface IProductService {
 
     List<ProductApiDto> getAllProducts();
-    ProductApiDto getProductById(Long productId);
+    ProductApiDto getProductById(Long id);
+    void deleteProductById(Long id);
 }

@@ -3,6 +3,8 @@ package com.product.service;
 import com.product.dto.ProductApiDto;
 
 import com.product.entity.ProductEntity;
+import com.product.exception.ErrorCode;
+import com.product.exception.ProductException;
 import com.product.mapper.ProductMapper;
 import com.product.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +32,17 @@ public class ProductService implements IProductService{
     public ProductApiDto getProductById(Long id) {
         Optional<ProductEntity> product = productRepository.findById(id);
         if (product.isEmpty()){
-            throw new RuntimeException("product does not exist");
+            throw new ProductException(ErrorCode.PRODUCT_NOT_FOUND, "product does not exist");
         }
         return ProductMapper.toDto(product.get());
+    }
+
+    @Override
+    public void deleteProductById(Long id) {
+        Optional<ProductEntity> product = productRepository.findById(id);
+        if (product.isEmpty()) {
+            throw new ProductException(ErrorCode.PRODUCT_NOT_FOUND, "product does not exist");
+        }
+        productRepository.deleteById(id);
     }
 }
