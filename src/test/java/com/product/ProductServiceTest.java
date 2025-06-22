@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,6 +61,4 @@ public class ProductServiceTest {
         assertThat(result).hasSize(2);
 
     }
-
-
 }
