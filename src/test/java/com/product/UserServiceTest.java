@@ -1,7 +1,10 @@
 package com.product;
 
+import com.product.dto.ProductApiDto;
 import com.product.dto.UserApiDto;
+import com.product.entity.ProductEntity;
 import com.product.entity.UserEntity;
+import com.product.exception.ProductException;
 import com.product.repository.IUserRepository;
 import com.product.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,5 +61,22 @@ public class UserServiceTest {
         assertThat(result.getFirst().getUsername()).isEqualTo("john");
         assertThat(result.get(1).getUsername()).isEqualTo("imad");
         assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void test_getUserById_when_id_is_valid(){
+        Optional<UserEntity> product = Optional.of(user2);
+        when(userRepository.findById(2L)).thenReturn(product);
+        UserApiDto result = userService.getUserById(2L);
+        assertThat(result.getId()).isEqualTo(2L);
+        assertThat(result.getUsername()).isEqualTo("imad");
+    }
+
+    @Test
+    void test_getUserById_when_id_does_not_exist(){
+        when(userRepository.findById(80L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> userService.getUserById(80L))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("user does not exist");
     }
 }

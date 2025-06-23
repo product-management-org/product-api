@@ -7,4 +7,5 @@ import java.util.List;
 public interface IUserService {
 
     List<UserApiDto> getAllUsers();
+    UserApiDto getUserById(Long id);
 }
