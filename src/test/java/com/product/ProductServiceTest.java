@@ -2,9 +2,11 @@ package com.product;
 
 import com.product.dto.ProductApiDto;
 import com.product.entity.ProductEntity;
+import com.product.entity.UserEntity;
 import com.product.exception.ProductException;
 import com.product.mapper.ProductMapper;
 import com.product.repository.IProductRepository;
+import com.product.repository.IUserRepository;
 import com.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +29,15 @@ public class ProductServiceTest {
 
     @Mock
     private IProductRepository productRepository;
+    @Mock
+    private IUserRepository userRepository;
 
     @InjectMocks
     private ProductService productService;
 
     private ProductEntity product1;
     private ProductEntity product2;
+    private UserEntity user1;
 
     @BeforeEach
     public void setup(){
@@ -53,8 +58,14 @@ public class ProductServiceTest {
         product2.setPrice(BigDecimal.valueOf(500));
         product2.setSku("WM-1004");
         product2.setCategory("Electronics");
-        product1.setCreatedAt(Instant.now());
-        product1.setUpdatedAt(Instant.now());
+        product2.setCreatedAt(Instant.now());
+        product2.setUpdatedAt(Instant.now());
+
+        user1 = new UserEntity();
+        user1.setId(1L);
+        user1.setUsername("john");
+        user1.setCreatedAt(Instant.now());
+        user1.setUpdatedAt(Instant.now());
     }
 
     @Test
@@ -141,6 +152,24 @@ public class ProductServiceTest {
         assertThatThrownBy(() -> productService.updateProduct(1L, dto))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("product does not exist");
+
+    }
+
+    @Test
+    void test_getAllProductByUserId_when_user_id_is_valid(){
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(productRepository.findByUser(user1)).thenReturn(List.of(product1, product2));
+        List<ProductApiDto> result = productService.getProductsByUserId(1L);
+        assertThat(result.getFirst().getName()).isEqualTo("Wireless Mouse");
+        assertThat(result.get(1).getName()).isEqualTo("Computer");
+    }
+
+    @Test
+    void test_getAllProductByUserId_when_user_id_is_not_valid(){
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> productService.getProductsByUserId(1L))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("usergit  does not exist");
 
     }
 

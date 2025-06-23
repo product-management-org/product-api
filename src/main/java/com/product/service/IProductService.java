@@ -11,4 +11,5 @@ public interface IProductService {
     void deleteProductById(Long id);
     ProductApiDto saveProduct(ProductApiDto productApiDto);
     ProductApiDto updateProduct(Long id, ProductApiDto productApiDto);
+    List<ProductApiDto> getProductsByUserId(Long useId);
 }

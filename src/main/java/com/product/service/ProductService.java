@@ -3,10 +3,12 @@ package com.product.service;
 import com.product.dto.ProductApiDto;
 
 import com.product.entity.ProductEntity;
+import com.product.entity.UserEntity;
 import com.product.exception.ErrorCode;
 import com.product.exception.ProductException;
 import com.product.mapper.ProductMapper;
 import com.product.repository.IProductRepository;
+import com.product.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class ProductService implements IProductService{
 
     @Autowired
     private IProductRepository productRepository;
+    @Autowired
+    private IUserRepository userRepository;
 
     @Override
     public List<ProductApiDto> getAllProducts() {
@@ -72,6 +76,19 @@ public class ProductService implements IProductService{
         productEntity.setCategory(productApiDto.getCategory());
         ProductEntity updatedProduct = productRepository.saveAndFlush(productEntity);
         return ProductMapper.toDto(updatedProduct);
+    }
+
+    @Override
+    public List<ProductApiDto> getProductsByUserId(Long useId) {
+        Optional<UserEntity> user = userRepository.findById(useId);
+        if (user.isEmpty()){
+            throw new ProductException(ErrorCode.USER_NOT_FOUND, "user does not exist");
+        }
+        return productRepository
+                .findByUser(user.get())
+                .stream()
+                .map(ProductMapper::toDto)
+                .toList();
     }
 
 }

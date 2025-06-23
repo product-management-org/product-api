@@ -19,6 +19,10 @@ public class ProductEntity {
     private Instant createdAt;
     private Instant updatedAt;
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
     public Long getId() {
         return id;
     }

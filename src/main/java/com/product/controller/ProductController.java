@@ -43,4 +43,10 @@ public class ProductController {
 
     }
 
+    @GetMapping("product/user/{userId}")
+    public ResponseEntity<List<ProductApiDto>> getProductsByUserId(@PathVariable Long userId){
+        return ResponseEntity.ok(productService.getProductsByUserId(userId));
+    }
+
+
 }

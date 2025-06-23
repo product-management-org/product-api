@@ -1,11 +1,7 @@
 package com.product.dto;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-
 
 public class ProductApiDto {
 
