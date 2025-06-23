@@ -20,6 +20,16 @@ public class ProductMapper {
         return product;
     }
 
+    public static ProductEntity toUpdateEntity(ProductApiDto dto, ProductEntity product){
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setSku(dto.getSku());
+        product.setCategory(dto.getCategory());
+        product.setUpdatedAt(Instant.now());
+        return product;
+    }
+
     public static ProductApiDto toDto(ProductEntity entity){
         ProductApiDto dto = new ProductApiDto();
         dto.setId(entity.getId());

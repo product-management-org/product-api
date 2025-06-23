@@ -20,6 +20,16 @@ public class UserMapper {
         return user;
     }
 
+    public static UserEntity toUpdateEntity(UserApiDto dto, UserEntity user){
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setPhone(dto.getPhone());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setUpdatedAt(Instant.now());
+        return user;
+    }
+
     public static UserApiDto toDto(UserEntity entity){
         UserApiDto dto = new UserApiDto();
         dto.setId(entity.getId());

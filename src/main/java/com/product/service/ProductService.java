@@ -67,14 +67,8 @@ public class ProductService implements IProductService{
         if (product.isEmpty()) {
             throw new ProductException(ErrorCode.PRODUCT_NOT_FOUND, "product does not exist");
         }
-        ProductEntity productEntity = product.get();
-        productEntity.setName(productApiDto.getName());
-        productEntity.setDescription(productApiDto.getDescription());
-        productEntity.setPrice(productApiDto.getPrice());
-        productEntity.setSku(productApiDto.getSku());
-        productEntity.setCategory(productApiDto.getCategory());
-        productEntity.setCategory(productApiDto.getCategory());
-        ProductEntity updatedProduct = productRepository.saveAndFlush(productEntity);
+        ProductEntity productToUpdate = ProductMapper.toUpdateEntity(productApiDto, product.get());
+        ProductEntity updatedProduct = productRepository.saveAndFlush(productToUpdate);
         return ProductMapper.toDto(updatedProduct);
     }
 

@@ -1,5 +1,6 @@
 package com.product.service;
 
+import com.product.dto.ProductApiDto;
 import com.product.dto.UserApiDto;
 import com.product.entity.ProductEntity;
 import com.product.entity.UserEntity;
@@ -36,5 +37,36 @@ public class UserService implements IUserService{
             throw new ProductException(ErrorCode.USER_NOT_FOUND, "user does not exist");
         }
         return UserMapper.toDto(user.get());
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        Optional<UserEntity> product = userRepository.findById(id);
+        if (product.isEmpty()) {
+            throw new ProductException(ErrorCode.USER_NOT_FOUND, "user does not exist");
+        }
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserApiDto saveUser(UserApiDto userApiDto) {
+        Optional<UserEntity> user = userRepository.findByUsername(userApiDto.getUsername());
+        if (user.isPresent()) {
+            throw new ProductException(ErrorCode.USER_ALREADY_EXISTS, "user already exists");
+        }
+        UserEntity userToSave = UserMapper.toNewEntity(userApiDto);
+        UserEntity savedUser = userRepository.save(userToSave);
+        return UserMapper.toDto(savedUser);
+    }
+
+    @Override
+    public UserApiDto updateUser(Long id, UserApiDto userApiDto) {
+        Optional<UserEntity> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new ProductException(ErrorCode.USER_NOT_FOUND, "user does not exist");
+        }
+        UserEntity userToUpdate = UserMapper.toUpdateEntity(userApiDto, user.get());
+        UserEntity updatedUser = userRepository.saveAndFlush(userToUpdate);
+        return UserMapper.toDto(updatedUser);
     }
 }

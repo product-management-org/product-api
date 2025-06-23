@@ -6,9 +6,7 @@ import com.product.service.IProductService;
 import com.product.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +24,25 @@ public class UserController {
     @GetMapping("user/{id}")
     public ResponseEntity<UserApiDto> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @DeleteMapping("delete/user/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<UserApiDto> saveUser(@RequestBody UserApiDto userApiDto){
+        return ResponseEntity.ok(userService.saveUser(userApiDto));
+    }
+
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<UserApiDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserApiDto userApiDto){
+        return ResponseEntity.ok(userService.updateUser(id, userApiDto));
+
     }
 
 
