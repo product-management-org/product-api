@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*") // not recommended on prod
 public class ProductController {
 
     @Autowired
@@ -46,6 +47,14 @@ public class ProductController {
     @GetMapping("product/user/{userId}")
     public ResponseEntity<List<ProductApiDto>> getProductsByUserId(@PathVariable Long userId){
         return ResponseEntity.ok(productService.getProductsByUserId(userId));
+    }
+
+    @PostMapping("attach/{userId}/products/{productId}")
+    public ResponseEntity<ProductApiDto> attachProductToUser(
+            @PathVariable Long userId,
+            @PathVariable Long productId) {
+        ProductApiDto product = productService.attachProductToUser(userId, productId);
+        return ResponseEntity.ok(product);
     }
 
 

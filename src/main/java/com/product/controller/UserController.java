@@ -1,8 +1,6 @@
 package com.product.controller;
 
-import com.product.dto.ProductApiDto;
 import com.product.dto.UserApiDto;
-import com.product.service.IProductService;
 import com.product.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired

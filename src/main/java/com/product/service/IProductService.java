@@ -12,4 +12,5 @@ public interface IProductService {
     ProductApiDto saveProduct(ProductApiDto productApiDto);
     ProductApiDto updateProduct(Long id, ProductApiDto productApiDto);
     List<ProductApiDto> getProductsByUserId(Long useId);
+    ProductApiDto attachProductToUser(Long userId, Long productId);
 }

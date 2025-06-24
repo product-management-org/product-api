@@ -85,4 +85,15 @@ public class ProductService implements IProductService{
                 .toList();
     }
 
+    @Override
+    public ProductApiDto attachProductToUser(Long userId, Long productId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        ProductEntity product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setUser(user);
+        ProductEntity attachedProduct = productRepository.saveAndFlush(product);
+        return ProductMapper.toDto(attachedProduct);
+    }
+
 }
